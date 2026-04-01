@@ -1,0 +1,42 @@
+{
+  "name": "jamaica-classifieds",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset --force && tsx prisma/seed.ts",
+    "setup": "cp .env.example .env && npm install && npm run db:generate && npm run db:push && npm run db:seed"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.4.2",
+    "@prisma/client": "^5.18.0",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.4.0",
+    "next": "14.2.13",
+    "next-auth": "^4.24.8",
+    "react": "^18",
+    "react-dom": "^18",
+    "stripe": "^16.9.0",
+    "resend": "^4.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.13",
+    "prisma": "^5.18.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,39 @@
+:root {
+  --gold: #f7c948;
+  --gold-dark: #c9961e;
+  --green: #1a7a3c;
+  --green-dark: #115529;
+  --green-light: #e8f5ed;
+  --black: #111111;
+  --ink: #1d2124;
+  --muted: #6b7280;
+  --subtle: #f4f4f2;
+  --border: #e5e5e0;
+  --white: #ffffff;
+  --font-sans: var(--font-dm-sans), "DM Sans", sans-serif;
+  --font-serif: var(--font-playfair), "Playfair Display", serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: var(--font-sans);
+  background: var(--subtle);
+  color: var(--ink);
+}
+a {
+  color: inherit;
+}
+@media (max-width: 900px) {
+  .home-ad-col {
+    display: none !important;
+  }
+  .home-sidebar {
+    display: none !important;
+  }
+}

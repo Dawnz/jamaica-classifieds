@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: jamaica_classifieds_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jc_user
+      POSTGRES_PASSWORD: jc_password
+      POSTGRES_DB: jamaica_classifieds
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jc_user -d jamaica_classifieds"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ListingTier {
+  FREE
+  PREMIUM
+}
+
+enum ListingStatus {
+  ACTIVE
+  EXPIRED
+  PENDING
+  REMOVED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+// ─── Auth Models (NextAuth) ───────────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── User ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // null if using OAuth
+  role          Role      @default(USER)
+  phone         String?
+  parish        String?
+
+  listings  Listing[]
+  payments  Payment[]
+  accounts  Account[]
+  sessions  Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Category & SubCategory ───────────────────────────────────────────────────
+
+model Category {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  icon          String?     // emoji or icon name
+  description   String?
+  order         Int         @default(0)
+  isActive      Boolean     @default(true)
+
+  subCategories SubCategory[]
+  listings      Listing[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SubCategory {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String
+  description String?
+  isActive    Boolean  @default(true)
+
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+
+  listings Listing[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([categoryId, slug])
+}
+
+// ─── Listing ──────────────────────────────────────────────────────────────────
+
+model Listing {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  price       Float?
+  priceLabel  String?       // display string e.g. "J$2,800,000" or "Negotiable"
+  parish      String        // one of the 14 Jamaican parishes
+  address     String?
+  contactName String?
+  contactPhone String?
+  contactEmail String?
+
+  category      Category     @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  subCategoryId String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  images ListingImage[]
+  fields ListingField[]   // dynamic key-value pairs per category type
+
+  tier      ListingTier   @default(FREE)
+  status    ListingStatus @default(ACTIVE)
+  expiresAt DateTime      // hidden from users after this date
+  viewCount Int           @default(0)
+
+  payment Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Full-text search index on title + description
+  @@index([status, expiresAt])
+  @@index([categoryId, status])
+  @@index([parish, status])
+  @@index([tier, status])
+}
+
+// ─── Listing Images (Cloudinary) ──────────────────────────────────────────────
+
+model ListingImage {
+  id        String  @id @default(cuid())
+  url       String  // Cloudinary secure_url
+  publicId  String? // Cloudinary public_id (for deletion)
+  width     Int?
+  height    Int?
+  order     Int     @default(0)
+
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId String
+
+  createdAt DateTime @default(now())
+}
+
+// ─── Listing Fields (dynamic per-category attributes) ────────────────────────
+// Examples:
+//   Auto:        make=Toyota, model=Corolla, year=2019, mileage=45000, transmission=Automatic
+//   Real Estate: property_type=House, bedrooms=3, bathrooms=2, size_sqft=1800, listing_type=Sale
+//   Jobs:        job_type=Full-time, industry=Finance, salary=Negotiable
+//   Mobile:      brand=Apple, model=iPhone 15, storage=256GB, condition=Used
+
+model ListingField {
+  id    String @id @default(cuid())
+  key   String // field identifier e.g. "make", "bedrooms"
+  label String // human-readable e.g. "Make", "Bedrooms"
+  value String
+
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId String
+
+  @@index([listingId])
+}
+
+// ─── Payments (Stripe) ────────────────────────────────────────────────────────
+
+model Payment {
+  id              String        @id @default(cuid())
+  amount          Int           // amount in cents (JMD)
+  currency        String        @default("jmd")
+  status          PaymentStatus @default(PENDING)
+
+  stripeSessionId  String? @unique
+  stripePaymentId  String?
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  listing   Listing @relation(fields: [listingId], references: [id])
+  listingId String  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
