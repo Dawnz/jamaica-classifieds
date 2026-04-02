@@ -1,3 +1,4 @@
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
 :root {
   --gold: #f7c948;
   --gold-dark: #c9961e;
@@ -21,6 +22,9 @@
   margin: 0;
   padding: 0;
 }
+html {
+  scroll-behavior: smooth;
+}
 body {
   font-family: var(--font-sans);
   background: var(--subtle);
@@ -29,11 +33,217 @@ body {
 a {
   color: inherit;
 }
-@media (max-width: 900px) {
-  .home-ad-col {
-    display: none !important;
+img {
+  max-width: 100%;
+}
+
+/* ── Navbar ────────────────────────────────────────────────────────────────── */
+.nav-links-desktop {
+  display: flex;
+}
+.nav-menu-btn {
+  display: none;
+}
+.nav-mobile-menu {
+  display: none;
+}
+
+/* ── Browse page 3-col layout ─────────────────────────────────────────────── */
+.browse-layout {
+  max-width: 1400px;
+  margin: 1.25rem auto 0;
+  padding: 0 1.25rem;
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  gap: 1.25rem;
+  align-items: start;
+}
+.browse-sidebar {
+  display: block;
+}
+.browse-ad-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: sticky;
+  top: 70px;
+}
+
+/* ── Listing detail 2-col layout ──────────────────────────────────────────── */
+.listing-detail-layout {
+  max-width: 1100px;
+  margin: 1.5rem auto;
+  padding: 0 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+}
+
+/* ── My Ads card layout ───────────────────────────────────────────────────── */
+.my-ads-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.my-ads-thumb {
+  width: 110px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+/* ── Post Ad form grid ────────────────────────────────────────────────────── */
+.post-ad-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.post-ad-3col {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* ── Sponsor banner ───────────────────────────────────────────────────────── */
+.sponsor-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.sponsor-tagline {
+  display: inline;
+}
+
+/* ── Smart filters bar ────────────────────────────────────────────────────── */
+.smart-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+/* ── Listing grid ─────────────────────────────────────────────────────────── */
+.listing-grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ── ✦ TABLET (max 1024px) ──────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .browse-layout {
+    grid-template-columns: 200px 1fr;
   }
-  .home-sidebar {
-    display: none !important;
+  .browse-ad-col {
+    display: none;
+  }
+}
+
+/* ── ✦ MOBILE (max 768px) ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Navbar */
+  .nav-links-desktop {
+    display: none;
+  }
+  .nav-menu-btn {
+    display: flex;
+  }
+  .nav-mobile-menu.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: var(--green);
+    padding: 1rem;
+    z-index: 99;
+    gap: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Browse layout — single column */
+  .browse-layout {
+    grid-template-columns: 1fr;
+    padding: 0 0.75rem;
+  }
+  .browse-sidebar {
+    display: none;
+  }
+  .browse-ad-col {
+    display: none;
+  }
+
+  /* Listing detail — stack vertically */
+  .listing-detail-layout {
+    grid-template-columns: 1fr;
+    padding: 0 0.75rem;
+  }
+
+  /* My Ads card */
+  .my-ads-card {
+    flex-direction: column;
+  }
+  .my-ads-thumb {
+    width: 100%;
+    height: 160px;
+  }
+
+  /* Post Ad */
+  .post-ad-2col {
+    grid-template-columns: 1fr;
+  }
+  .post-ad-3col {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sponsor banner */
+  .sponsor-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  .sponsor-tagline {
+    display: none;
+  }
+
+  /* Smart filters — scroll horizontally */
+  .smart-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  /* Listing grid — 2 columns on mobile */
+  .listing-grid-auto {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  /* Hero section */
+  .hero-section {
+    padding: 2rem 1rem 1.5rem !important;
+  }
+
+  /* General padding */
+  .page-content {
+    padding: 0 0.75rem !important;
+  }
+}
+
+/* ── ✦ SMALL MOBILE (max 400px) ─────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .listing-grid-auto {
+    grid-template-columns: 1fr;
+  }
+}
+/* Mobile filter bar — hidden on desktop, shown on mobile */
+.mobile-filter-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-filter-bar {
+    display: block;
   }
 }
