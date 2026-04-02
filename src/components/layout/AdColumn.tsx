@@ -9,7 +9,7 @@ const AD_SLOTS = [
 
 export default function AdColumn() {
   return (
-    <aside style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', position: 'sticky', top: 70 }}>
+    <>
       {AD_SLOTS.map(slot => (
         <Link key={slot.id} href="/contact" style={{ textDecoration: 'none' }}>
           <div style={{
@@ -30,6 +30,6 @@ export default function AdColumn() {
           </div>
         </Link>
       ))}
-    </aside>
+    </>
   )
 }

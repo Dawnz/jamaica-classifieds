@@ -34,10 +34,10 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
     status: 'ACTIVE', expiresAt: { gt: now },
     ...(categoryRecord ? { categoryId: categoryRecord.id } : {}),
     ...(searchParams.parish ? { parish: searchParams.parish } : {}),
-    ...(searchParams.tier ? { tier: searchParams.tier } : {}),
+    ...(searchParams.tier   ? { tier: searchParams.tier }     : {}),
     ...(searchParams.q ? {
       OR: [
-        { title: { contains: searchParams.q, mode: 'insensitive' } },
+        { title:       { contains: searchParams.q, mode: 'insensitive' } },
         { description: { contains: searchParams.q, mode: 'insensitive' } },
       ],
     } : {}),
@@ -52,16 +52,12 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
   const FIELD_KEYS = ['make','model','year','condition','transmission','listing_type','property_type','bedrooms','bathrooms','job_type','industry','brand','type']
   const fieldFilters = FIELD_KEYS.filter(k => (searchParams as any)[k])
   if (fieldFilters.length > 0) {
-    where.fields = {
-      some: {
-        AND: fieldFilters.map(k => ({ key: k, value: { contains: (searchParams as any)[k], mode: 'insensitive' } })),
-      },
-    }
+    where.fields = { some: { AND: fieldFilters.map(k => ({ key: k, value: { contains: (searchParams as any)[k], mode: 'insensitive' } })) } }
   }
 
   const orderBy: any = {
-    'oldest': { createdAt: 'asc' },
-    'price-asc': { price: 'asc' },
+    'oldest':     { createdAt: 'asc' },
+    'price-asc':  { price: 'asc' },
     'price-desc': { price: 'desc' },
   }[searchParams.sort ?? ''] ?? [{ tier: 'desc' }, { createdAt: 'desc' }]
 
@@ -89,27 +85,44 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
     <>
       <Navbar />
 
-      {/* Search bar */}
       <div style={{ background: 'var(--green)', padding: '0.85rem 1.5rem' }}>
         <SearchBar initialQ={searchParams.q} initialCategory={searchParams.category} />
       </div>
 
-      {/* Sponsor banner */}
       <SponsorBanner />
-
-      {/* 3-column layout: sidebar | listings | ads */}
-      <div style={{
-        maxWidth: 1400, margin: '1.25rem auto 0', padding: '0 1.25rem',
-        display: 'grid',
-        gridTemplateColumns: '220px 1fr 220px',
-        gap: '1.25rem',
-        alignItems: 'start',
+{/* Mobile category filter — only visible on small screens */}
+<div style={{ padding: '0.75rem', background: '#fff', borderBottom: '1px solid var(--border)' }} className="mobile-filter-bar">
+  <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+    <a href="/browse" style={{
+      padding: '0.4rem 0.9rem', borderRadius: 20, whiteSpace: 'nowrap',
+      background: !searchParams.category ? 'var(--green)' : 'var(--subtle)',
+      color: !searchParams.category ? '#fff' : 'var(--muted)',
+      fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none',
+      border: '1px solid var(--border)', flexShrink: 0,
+    }}>All</a>
+    {categories.map(cat => (
+      <a key={cat.id} href={`/browse?category=${cat.slug}`} style={{
+        padding: '0.4rem 0.9rem', borderRadius: 20, whiteSpace: 'nowrap',
+        background: searchParams.category === cat.slug ? 'var(--green)' : 'var(--subtle)',
+        color: searchParams.category === cat.slug ? '#fff' : 'var(--muted)',
+        fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none',
+        border: '1px solid var(--border)', flexShrink: 0,
+        display: 'flex', alignItems: 'center', gap: 4,
       }}>
+        <span>{cat.icon}</span>{cat.name}
+      </a>
+    ))}
+  </div>
+</div>
+      {/* 3-column layout — collapses via CSS classes */}
+      <div className="browse-layout">
 
-        {/* LEFT — category + parish sidebar */}
-        <Sidebar categories={categories as any} />
+        {/* LEFT sidebar */}
+        <div className="browse-sidebar">
+          <Sidebar categories={categories as any} />
+        </div>
 
-        {/* CENTRE — filters + listing grid */}
+        {/* CENTRE — listings */}
         <div>
           {searchParams.category && (
             <SmartFilters categorySlug={searchParams.category} />
@@ -122,9 +135,9 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
               {categoryRecord ? ` in ${categoryRecord.name}` : ''}
               {searchParams.q ? ` for "${searchParams.q}"` : ''}
             </span>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <SortLink searchParams={searchParams} label="Newest" value="" />
-              <SortLink searchParams={searchParams} label="Oldest" value="oldest" />
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <SortLink searchParams={searchParams} label="Newest"  value="" />
+              <SortLink searchParams={searchParams} label="Oldest"  value="oldest" />
               <SortLink searchParams={searchParams} label="Price ↑" value="price-asc" />
               <SortLink searchParams={searchParams} label="Price ↓" value="price-desc" />
             </div>
@@ -132,7 +145,7 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
 
           {/* Listing grid */}
           {listings.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+            <div className="listing-grid-auto">
               {listings.map(l => <ListingCard key={l.id} listing={l as any} />)}
             </div>
           ) : (
@@ -146,7 +159,7 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: '2rem', flexWrap: 'wrap' }}>
               {page > 1 && <Link href={pageUrl(page - 1)} style={pageLinkStyle(false)}>← Prev</Link>}
               {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => i + 1).map(p => (
                 <Link key={p} href={pageUrl(p)} style={pageLinkStyle(p === page)}>{p}</Link>
@@ -156,8 +169,10 @@ export default async function BrowsePage({ searchParams }: { searchParams: Searc
           )}
         </div>
 
-        {/* RIGHT — ad column */}
-        <AdColumn />
+        {/* RIGHT ad column */}
+        <div className="browse-ad-col">
+          <AdColumn />
+        </div>
 
       </div>
 

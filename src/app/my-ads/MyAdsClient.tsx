@@ -1,5 +1,5 @@
 'use client'
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -44,57 +44,55 @@ export default function MyAdsClient({ listings }: { listings: Listing[] }) {
 
         return (
           <div key={l.id} style={{
-            background: '#fff', border: l.tier === 'PREMIUM' ? '1.5px solid var(--gold)' : '1px solid var(--border)',
-            borderRadius: 12, display: 'flex', gap: '1rem', padding: '1rem', alignItems: 'flex-start',
-            opacity: expired ? 0.7 : 1,
+            background: '#fff',
+            border: l.tier === 'PREMIUM' ? '1.5px solid var(--gold)' : '1px solid var(--border)',
+            borderRadius: 12, padding: '1rem', opacity: expired ? 0.7 : 1,
           }}>
-            {/* Thumbnail */}
-            <div style={{ width: 110, height: 80, borderRadius: 8, overflow: 'hidden', flexShrink: 0, background: 'var(--subtle)', position: 'relative' }}>
-              {img ? (
-                <Image src={img} alt={l.title} fill style={{ objectFit: 'cover' }} sizes="110px" />
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '2rem' }}>
-                  {l.category.icon ?? '📦'}
+            {/* Uses CSS class — row on desktop, column on mobile */}
+            <div className="my-ads-card">
+              {/* Thumbnail */}
+              <div className="my-ads-thumb" style={{ borderRadius: 8, overflow: 'hidden', background: 'var(--subtle)', position: 'relative', flexShrink: 0 }}>
+                {img
+                  ? <Image src={img} alt={l.title} fill style={{ objectFit: 'cover' }} sizes="110px" />
+                  : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '2rem' }}>{l.category.icon ?? '📦'}</div>
+                }
+              </div>
+
+              {/* Info */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                  {l.tier === 'PREMIUM' && (
+                    <span style={{ background: 'var(--gold)', color: '#7B3F00', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: 20 }}>⭐ Featured</span>
+                  )}
+                  <StatusPill status={l.status} expired={expired} />
                 </div>
-              )}
-            </div>
+                <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <Link href={`/listings/${l.id}`} style={{ color: 'var(--ink)', textDecoration: 'none' }}>{l.title}</Link>
+                </h3>
+                <div style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  <span>{l.category.icon} {l.category.name}</span>
+                  <span>📍 {l.parish}</span>
+                  <span>👁️ {l.viewCount} views</span>
+                  <span style={{ color: daysLeft <= 5 && !expired ? '#C0392B' : expired ? '#C0392B' : 'var(--muted)' }}>
+                    {expired ? '⏳ Expired' : `⏳ ${daysLeft}d left`}
+                  </span>
+                </div>
+              </div>
 
-            {/* Info */}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
-                {l.tier === 'PREMIUM' && (
-                  <span style={{ background: 'var(--gold)', color: '#7B3F00', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: 20 }}>⭐ Featured</span>
-                )}
-                <StatusPill status={l.status} expired={expired} />
-              </div>
-              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <Link href={`/listings/${l.id}`} style={{ color: 'var(--ink)', textDecoration: 'none' }}>{l.title}</Link>
-              </h3>
-              <div style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                <span>{l.category.icon} {l.category.name}</span>
-                <span>📍 {l.parish}</span>
-                <span>👁️ {l.viewCount} views</span>
-                {!expired ? (
-                  <span style={{ color: daysLeft <= 5 ? '#C0392B' : 'var(--muted)' }}>⏳ {daysLeft}d left</span>
-                ) : (
-                  <span style={{ color: '#C0392B' }}>⏳ Expired</span>
-                )}
-              </div>
-            </div>
-
-            {/* Price + actions */}
-            <div style={{ flexShrink: 0, textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-              <div style={{ fontWeight: 700, color: 'var(--green)', fontSize: '0.95rem' }}>
-                {l.priceLabel ?? 'No price'}
-              </div>
-              <div style={{ display: 'flex', gap: 6 }}>
-                <Link href={`/listings/${l.id}`} style={actionBtn('#185FA5')}>View</Link>
-                {!expired && l.tier === 'FREE' && (
-                  <Link href={`/payment/boost/${l.id}`} style={actionBtn('#C9961E')}>⭐ Boost</Link>
-                )}
-                <button onClick={() => deleteListing(l.id)} style={{ ...actionBtn('#C0392B'), background: 'none', fontFamily: 'var(--font-sans)', cursor: 'pointer' }}>
-                  Delete
-                </button>
+              {/* Price + actions */}
+              <div style={{ flexShrink: 0, textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
+                <div style={{ fontWeight: 700, color: 'var(--green)', fontSize: '0.95rem' }}>
+                  {l.priceLabel ?? 'No price'}
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                  <Link href={`/listings/${l.id}`} style={actionBtn('#185FA5')}>View</Link>
+                  {!expired && l.tier === 'FREE' && (
+                    <Link href={`/payment/boost/${l.id}`} style={actionBtn('#C9961E')}>⭐ Boost</Link>
+                  )}
+                  <button onClick={() => deleteListing(l.id)} style={{ ...actionBtn('#C0392B'), background: 'none', fontFamily: 'var(--font-sans)', cursor: 'pointer' }}>
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -107,10 +105,12 @@ export default function MyAdsClient({ listings }: { listings: Listing[] }) {
 function StatusPill({ status, expired }: { status: string; expired: boolean }) {
   const s = expired ? 'EXPIRED' : status
   const m: Record<string, [string, string]> = {
-    ACTIVE: ['#D1FAE5','#065F46'], EXPIRED: ['#F3F4F6','#6B7280'],
-    PENDING: ['#FEF3C7','#92400E'], REMOVED: ['#FEE2E2','#991B1B'],
+    ACTIVE:  ['#D1FAE5', '#065F46'],
+    EXPIRED: ['#F3F4F6', '#6B7280'],
+    PENDING: ['#FEF3C7', '#92400E'],
+    REMOVED: ['#FEE2E2', '#991B1B'],
   }
-  const [bg, color] = m[s] ?? ['#F3F4F6','#6B7280']
+  const [bg, color] = m[s] ?? ['#F3F4F6', '#6B7280']
   return <span style={{ background: bg, color, fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px', borderRadius: 20 }}>{s}</span>
 }
 

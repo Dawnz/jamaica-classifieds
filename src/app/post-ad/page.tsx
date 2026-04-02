@@ -95,7 +95,7 @@ export default function PostAdPage() {
         <form onSubmit={handleSubmit}>
           {/* Tier selector */}
           <Section title="Listing Type">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className='post-ad-2col'>
               {[
                 { value: 'FREE', label: 'Free Listing', desc: 'Active for 30 days', price: 'Free' },
                 { value: 'PREMIUM', label: '⭐ Premium Listing', desc: 'Active for 60 days · Top placement · Featured badge', price: 'J$1,500' },
@@ -117,7 +117,7 @@ export default function PostAdPage() {
 
           {/* Category */}
           <Section title="Category">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className='post-ad-2col'>
               <div>
                 <label style={labelStyle}>Category *</label>
                 <select required value={form.categoryId} onChange={e => handleCategoryChange(e.target.value)} style={inputStyle}>
@@ -140,7 +140,7 @@ export default function PostAdPage() {
           {/* Dynamic fields */}
           {dynamicFilters.length > 0 && (
             <Section title="Listing Details">
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
+              <div className='post-ad-3col'>
                 {fields.map((f, i) => (
                   <div key={f.key}>
                     <label style={labelStyle}>{f.label}</label>
@@ -167,7 +167,7 @@ export default function PostAdPage() {
             <textarea required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
               placeholder="Describe your item in detail — condition, features, reason for selling…"
               rows={5} style={{ ...inputStyle, width: '100%', resize: 'vertical', marginBottom: 12 }} />
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className='post-ad-2col'>
               <div>
                 <label style={labelStyle}>Price (J$)</label>
                 <input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
@@ -205,7 +205,7 @@ export default function PostAdPage() {
 
           {/* Contact */}
           <Section title="Contact Information">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
+            <div className='post-ad-3col'>
               <div>
                 <label style={labelStyle}>Contact Name</label>
                 <input value={form.contactName} onChange={e => setForm(f => ({ ...f, contactName: e.target.value }))}
