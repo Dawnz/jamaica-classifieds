@@ -125,12 +125,12 @@ export default function PostAdPage() {
                   {categories.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
                 </select>
               </div>
-              {selectedCategory?.subCategories.length > 0 && (
+              {(selectedCategory?.subCategories?.length ?? 0) > 0 && (
                 <div>
                   <label style={labelStyle}>Sub-category</label>
                   <select value={form.subCategoryId} onChange={e => setForm(f => ({ ...f, subCategoryId: e.target.value }))} style={inputStyle}>
                     <option value="">Select sub-category</option>
-                    {selectedCategory.subCategories.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                    {selectedCategory?.subCategories.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
                 </div>
               )}
