@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 import { requireAdminApi } from '@/lib/admin-guard'
 import { prisma } from '@/lib/prisma'
@@ -19,3 +21,4 @@ export async function POST(req: Request) {
   })
   return NextResponse.json(cat, { status: 201 })
 }
+

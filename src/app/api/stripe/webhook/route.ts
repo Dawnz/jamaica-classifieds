@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import Stripe from 'stripe'
@@ -46,3 +48,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ received: true })
 }
+

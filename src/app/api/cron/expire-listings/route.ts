@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendExpiryWarningEmail, sendExpiredEmail } from "@/lib/email/send";
@@ -61,3 +63,4 @@ export async function GET(req: Request) {
     ranAt: now.toISOString(),
   });
 }
+

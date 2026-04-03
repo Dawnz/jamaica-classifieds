@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -52,3 +54,4 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ url: checkoutSession.url })
 }
+
