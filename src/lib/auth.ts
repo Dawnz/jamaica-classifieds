@@ -10,7 +10,10 @@ import { prisma } from "./prisma";
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
   session: { strategy: "jwt" },
-  pages: { signIn: "/auth/signin" },
+  pages: {
+    signIn: "/auth/signin",
+    error: "/auth/signin",
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
