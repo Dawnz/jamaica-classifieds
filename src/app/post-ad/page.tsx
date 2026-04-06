@@ -207,12 +207,12 @@ export default function PostAdPage() {
       {/* Nav arrows */}
       {previews.length > 1 && (
         <>
-          <button type="button" onClick={() => setActivePreview(i => Math.max(0, i - 1))}
-            style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: '1rem', cursor: 'pointer', display: activePreview === 0 ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button type="button" onClick={() => setActivePreview(prev => Math.max(0, prev - 1))}
+            style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: '1rem', cursor: 'pointer', display: 'flex', opacity: activePreview === 0 ? 0.3 : 1, alignItems: 'center', justifyContent: 'center' }}>
             ‹
           </button>
-          <button type="button" onClick={() => setActivePreview(i => Math.min(previews.length - 1, i + 1))}
-            style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: '1rem', cursor: 'pointer', display: activePreview === previews.length - 1 ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button type="button" onClick={() => setActivePreview(prev => Math.min(previews.length - 1, prev + 1))}
+            style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: '1rem', cursor: 'pointer', display: 'flex', opacity: activePreview === previews.length - 1 ? 0.3 : 1, alignItems: 'center', justifyContent: 'center' }}>
             ›
           </button>
         </>
