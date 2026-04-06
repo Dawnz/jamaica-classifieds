@@ -21,7 +21,7 @@ export default async function MyAdsPage() {
   return (
     <>
       <Navbar />
-      <div style={{ maxWidth: 900, margin: '2rem auto', padding: '0 1.25rem' }}>
+      <div style={{ maxWidth: 1800, margin: '2rem auto', padding: '0 1.25rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div>
             <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', marginBottom: 4 }}>My Ads</h1>

@@ -88,7 +88,7 @@ export default function PostAdPage() {
   return (
     <>
       <Navbar />
-      <div style={{ maxWidth: 780, margin: '2rem auto', padding: '0 1.25rem' }}>
+      <div style={{ maxWidth: 1800, margin: '2rem auto', padding: '0 1.25rem' }}>
         <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', marginBottom: '0.25rem' }}>Post an Ad</h1>
         <p style={{ color: 'var(--muted)', marginBottom: '2rem' }}>Reach thousands of buyers across Jamaica — free in 5 minutes.</p>
 
