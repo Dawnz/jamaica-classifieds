@@ -50,7 +50,7 @@ img {
 
 /* ── Browse page 3-col layout ─────────────────────────────────────────────── */
 .browse-layout {
-  max-width: 1400px;
+  max-width: 1800px;
   margin: 1.25rem auto 0;
   padding: 0 1.25rem;
   display: grid;

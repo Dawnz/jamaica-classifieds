@@ -24,7 +24,7 @@ export default function SponsorBanner() {
 
   return (
     <div style={{ background: '#fff', borderBottom: '1px solid #E5E5E0', borderTop: '1px solid #E5E5E0' }}>
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0.5rem 1.25rem' }}>
+      <div style={{ maxWidth: 1800, margin: '0 auto', padding: '0.5rem 1.25rem' }}>
         <div
           className="sponsor-inner"
           style={{

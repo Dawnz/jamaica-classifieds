@@ -57,7 +57,7 @@ export default async function HomePage() {
         <SearchBar />
       </div>
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1.5rem 1.25rem' }}>
+      <div style={{ maxWidth: 1800, margin: '0 auto', padding: '1.5rem 1.25rem' }}>
 
         {/* Category pills */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: '2rem' }}>
