@@ -12,6 +12,7 @@ export default function PostAdPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
+  const [activePreview, setActivePreview] = useState(0)
   const [categories, setCategories] = useState<Category[]>([])
   const [form, setForm] = useState({
     title: '', description: '', price: '', priceLabel: '',
@@ -44,10 +45,11 @@ export default function PostAdPage() {
   }
 
   function handleImages(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []).slice(0, 6)
-    setImageFiles(files)
-    setPreviews(files.map(f => URL.createObjectURL(f)))
-  }
+  const files = Array.from(e.target.files ?? []).slice(0, 6)
+  setImageFiles(files)
+  setPreviews(files.map(f => URL.createObjectURL(f)))
+  setActivePreview(0)
+}
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -195,15 +197,51 @@ export default function PostAdPage() {
 
           {/* Images */}
           <Section title="Photos (up to 6)">
-            <input type="file" accept="image/*" multiple onChange={handleImages}
-              style={{ marginBottom: 12, fontSize: '0.875rem' }} />
-            {previews.length > 0 && (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {previews.map((p, i) => (
-                  <img key={i} src={p} alt="" style={{ width: 100, height: 75, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border)' }} />
-                ))}
-              </div>
-            )}
+           <input type="file" accept="image/*" multiple onChange={handleImages}
+  style={{ marginBottom: 12, fontSize: '0.875rem' }} />
+{previews.length > 0 && (
+  <div>
+    {/* Main preview */}
+    <div style={{ position: 'relative', width: '100%', height: 260, borderRadius: 10, overflow: 'hidden', background: 'var(--subtle)', marginBottom: 8 }}>
+      <img src={previews[activePreview]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      {/* Nav arrows */}
+      {previews.length > 1 && (
+        <>
+          <button type="button" onClick={() => setActivePreview(i => Math.max(0, i - 1))}
+            style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: '1rem', cursor: 'pointer', display: activePreview === 0 ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            ‹
+          </button>
+          <button type="button" onClick={() => setActivePreview(i => Math.min(previews.length - 1, i + 1))}
+            style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', color: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, fontSize: '1rem', cursor: 'pointer', display: activePreview === previews.length - 1 ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            ›
+          </button>
+        </>
+      )}
+      {/* Counter */}
+      <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.55)', color: '#fff', fontSize: '0.75rem', fontWeight: 600, padding: '2px 10px', borderRadius: 20 }}>
+        {activePreview + 1} / {previews.length}
+      </div>
+      {/* Remove button */}
+      <button type="button" onClick={() => {
+        const newFiles    = imageFiles.filter((_, i) => i !== activePreview)
+        const newPreviews = previews.filter((_, i) => i !== activePreview)
+        setImageFiles(newFiles)
+        setPreviews(newPreviews)
+        setActivePreview(Math.min(activePreview, newPreviews.length - 1))
+      }} style={{ position: 'absolute', top: 8, right: 8, background: 'rgba(192,57,43,0.85)', color: '#fff', border: 'none', borderRadius: '50%', width: 28, height: 28, fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        ✕
+      </button>
+    </div>
+
+    {/* Thumbnail strip */}
+    <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4 }}>
+      {previews.map((p, i) => (
+        <img key={i} src={p} alt="" onClick={() => setActivePreview(i)}
+          style={{ width: 72, height: 54, objectFit: 'cover', borderRadius: 6, flexShrink: 0, cursor: 'pointer', border: i === activePreview ? '2px solid #1A7A3C' : '2px solid transparent', opacity: i === activePreview ? 1 : 0.65, transition: 'all 0.15s' }} />
+      ))}
+    </div>
+  </div>
+)}
           </Section>
 
           {/* Contact */}
