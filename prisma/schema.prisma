@@ -81,6 +81,7 @@ model User {
   password      String?   // null if using OAuth
   role          Role      @default(USER)
   phone         String?
+  bio           String?  @db.Text
   parish        String?
 
   listings  Listing[]
