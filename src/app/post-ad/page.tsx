@@ -63,15 +63,18 @@ export default function PostAdPage() {
         if (res.ok) { const data = await res.json(); imageUrls.push(data.url) }
       }
 
+      const payload = {
+        ...form,
+        price: form.price ? Number(form.price) : null,
+        subCategoryId: form.subCategoryId || null,
+        fields: fields.filter(f => f.value),
+        imageUrls,
+      }
+
       const res = await fetch('/api/listings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          price: form.price ? Number(form.price) : null,
-          fields: fields.filter(f => f.value),
-          imageUrls,
-        }),
+        body: JSON.stringify(payload),
       })
 
       if (!res.ok) { setError((await res.json()).error ?? 'Failed to create listing'); setLoading(false); return }
