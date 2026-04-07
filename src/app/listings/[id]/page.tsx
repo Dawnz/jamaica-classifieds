@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import ListingActions from '@/components/listings/ListingActions'
+import ImageGallery from '../ImageGallery'
 
 export const dynamic = 'force-dynamic'
 
@@ -62,7 +63,7 @@ export default async function ListingDetailPage({ params }: { params: { id: stri
           </div>
 
           {/* Images */}
-          {listing.images.length > 0 ? (
+          {/* {listing.images.length > 0 ? (
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{ position: 'relative', width: '100%', height: 'clamp(200px, 40vw, 380px)', borderRadius: 14, overflow: 'hidden', background: 'var(--subtle)', marginBottom: 8 }}>
                 <Image src={listing.images[0].url} alt={listing.title} fill style={{ objectFit: 'cover' }} priority />
@@ -81,7 +82,8 @@ export default async function ListingDetailPage({ params }: { params: { id: stri
             <div style={{ width: '100%', height: 240, background: 'var(--subtle)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem', marginBottom: '1.5rem' }}>
               {listing.category.icon ?? '📦'}
             </div>
-          )}
+          )} */}
+          <ImageGallery images={listing.images} title={listing.title} />
 
           {/* Dynamic fields */}
           {listing.fields.length > 0 && (
